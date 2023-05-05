@@ -7,7 +7,7 @@ on:
 jobs:
   deploy_dev:
     name: Deploy to Dev
-    uses: nigel4321/workflow-1/.github/workflows/deploy.yml@main
+    uses: nigel4321/workflow-3/.github/workflows/deploy.yml@main
     with:
       environment: dev
     secrets:
