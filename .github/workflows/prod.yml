@@ -1,0 +1,13 @@
+name: Deploy prod
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy_prod:
+    name: Deploy to Prod
+    uses: nigel4321/workflow-1/.github/workflows/deploy.yml@main
+    with:
+      environment: prod
+    secrets:
+      PASSWORD: ${{ secrets.PASSWORD }}

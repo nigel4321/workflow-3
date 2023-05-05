@@ -1,0 +1,14 @@
+name: Deploy dev
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  deploy_dev:
+    name: Deploy to Dev
+    uses: nigel4321/workflow-1/.github/workflows/deploy.yml@main
+    with:
+      environment: dev
+    secrets:
+      PASSWORD: ${{ secrets.PASSWORD }}

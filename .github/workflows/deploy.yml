@@ -1,0 +1,25 @@
+name: Deploy Template
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: environment to deploy to
+        required: true
+    secrets:
+      PASSWORD:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      KUBE: ${{ vars.KUBE }}
+    
+    steps:
+    - name: Dump Password
+      run: |
+        echo $KUBE
