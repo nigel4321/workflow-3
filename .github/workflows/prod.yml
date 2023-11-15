@@ -1,5 +1,5 @@
 name: Deploy prod 
-run-name: Deploy on "${{ github.event.repository.name }}"
+run-name: Deploy on ${{ github.event.repository.name }}
 
 on:
   workflow_dispatch:
