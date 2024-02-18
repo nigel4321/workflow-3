@@ -1,0 +1,17 @@
+name: Event on merge
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    types:
+        - closed
+
+jobs:
+  check_merge:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        echo $GITHUB_OUTPUT
