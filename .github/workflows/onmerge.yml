@@ -25,7 +25,10 @@ jobs:
             echo GITHUB OUTPUT
             echo $GITHUB_OUTPUT
         - name: github output
+          env:
+            SOURCE_BRANCH: ${{ steps.set-vars.outputs.SOURCE_BRANCH }}
           run: |
             echo $GITHUB_OUTPUT
             echo "===================="
             echo ${{ steps.set-vars.outputs.SOURCE_BRANCH }}
+            echo SOURCE_BRANCH $SOURCE_BRANCH
