@@ -6,6 +6,9 @@ on:
   pull_request:
     types:
         - closed
+defaults:
+    run:
+        shell: bash
 
 jobs:
   check_merge:
@@ -17,6 +20,6 @@ jobs:
             echo "SOURCE_BRANCH=${GITHUB_HEAD_REF}" >> "$GITHUB_OUTPUT"
             echo "NEWVAR=V1" >> "$GITHUB_OUTPUT"
             echo GITHUB_HEAD_REF $GITHUB_HEAD_REF
-            echo ref name ${{ github.ref_name }}
+            echo ref Name ${{ github.ref_name }}
             echo GITHUB OUTPUT
             echo $GITHUB_OUTPUT
