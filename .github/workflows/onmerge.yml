@@ -1,5 +1,5 @@
 name: Event on merge
-run-name: Merging ${{ github.ref_name }}
+run-name: Clean up on merge ${{ github.head_ref }} 
 
 on:
   workflow_dispatch:
