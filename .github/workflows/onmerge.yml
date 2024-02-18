@@ -1,4 +1,5 @@
 name: Event on merge
+run-name: Merging ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
@@ -14,4 +15,6 @@ jobs:
     steps:
     - run: |
         echo "BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        echo GITHUB_HEAD_REF $GITHUB_HEAD_REF
+        echo ref name ${{ github.ref_name }}
         echo $GITHUB_OUTPUT
