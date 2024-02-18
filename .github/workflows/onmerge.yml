@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - name: Print vars
+          id: set-vars
           run: |
             echo "SOURCE_BRANCH=${GITHUB_HEAD_REF}" >> "$GITHUB_OUTPUT"
             echo "NEWVAR=V1" >> "$GITHUB_OUTPUT"
@@ -26,3 +27,5 @@ jobs:
         - name: github output
           run: |
             echo $GITHUB_OUTPUT
+            echo "===================="
+            echo ${{ steps.set-vars.outputs.SOURCE_BRANCH }}
