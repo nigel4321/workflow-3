@@ -1,34 +1,20 @@
-name: Event on merge
-run-name: Clean up on merge ${{ github.head_ref }} 
+name: summary
+
 
 on:
   workflow_dispatch:
-  pull_request:
-    types:
-        - closed
+  push:
+  
 defaults:
     run:
         shell: bash
 
 jobs:
   check_merge:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
         - name: Print vars
           id: set-vars
           run: |
-            echo "SOURCE_BRANCH=${GITHUB_HEAD_REF}" >> "$GITHUB_OUTPUT"
-            echo "NEWVAR=V1" >> "$GITHUB_OUTPUT"
-            echo GITHUB_HEAD_REF $GITHUB_HEAD_REF
-            echo ref Name ${{ github.ref_name }}
-            echo GITHUB OUTPUT
-            echo $GITHUB_OUTPUT
-        - name: github output
-          env:
-            SOURCE_BRANCH: ${{ steps.set-vars.outputs.SOURCE_BRANCH }}
-          run: |
-            echo $GITHUB_OUTPUT
-            echo "===================="
-            echo ${{ steps.set-vars.outputs.SOURCE_BRANCH }}
-            echo SOURCE_BRANCH $SOURCE_BRANCH
+            export DG="abc.def.com"
+            echo "[Dagster URL]: https://${DG}" >> $GITHUB_STEP_SUMMARY
