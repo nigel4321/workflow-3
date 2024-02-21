@@ -17,4 +17,5 @@ jobs:
           id: set-vars
           run: |
             export DG="abc.def.com"
-            echo "[Dagster URL]: https://${DG}" >> $GITHUB_STEP_SUMMARY
+            echo "Dagster URL https://${DG}"
+            echo "Dagster URL https://${DG}" >> $GITHUB_STEP_SUMMARY
