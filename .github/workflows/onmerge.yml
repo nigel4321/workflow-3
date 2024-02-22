@@ -1,21 +1,98 @@
-name: summary
-
+name: Build base container
 
 on:
   workflow_dispatch:
   push:
-  
-defaults:
-    run:
-        shell: bash
+    branches:
+        - 'main'
+    paths:
+      - 'Dockerfile.base'
+concurrency: build-base
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  HELM_VERSION: v3.8.0
+  KUBECTL_VERSION: "v1.23.8"
+  HELM_LOCATION: "https://get.helm.sh"
+  AZURE_CLI_VERSION: "2.43.0-1~focal"
+  AZURE_FRONTDOOR_VERSION: "1.0.14"
+  TERRAFORM_VERSION: "1.3.5"
+  GOSS_VERSION: "v0.3.13"
+  POPEYE_VERSION: "v0.10.1"
+  CONFTEST_VERSION: "0.21.0"
+  KUBEVAL_VERSION: "v0.16.1"
+  AWSCLI_VERSION: "2.0.30"
+  YQ_VERSION: "v4.28.1"
 
 jobs:
-  check_merge:
+  push_to_registries:
+    name: Push Docker image registry
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
-        - name: Print vars
-          id: set-vars
-          run: |
-            export DG="abc.def.com"
-            echo "Dagster URL https://${DG}"
-            echo "Dagster URL https://${DG}" >> $GITHUB_STEP_SUMMARY
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Log in to  registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_PAT }}
+
+      - name: Set version
+        run: |
+          git config --global user.name "$git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+          git fetch -f --all --tags
+          if [ ${{ github.ref_name }} != "main" ]; then
+            export TAG_PREFIX="${{ github.ref_name }}_"
+          fi
+          export VERSION_TAG=$(./scripts/set-version.sh  | awk '/TAG/ {print $2}'); echo $VERSION_TAG
+          echo "VERSION_TAG=${VERSION_TAG}" >> $GITHUB_ENV
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}
+
+      - name: Show meta tags
+        run: echo Meta tag ${{ steps.meta.outputs.tags }}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}:base_${{ env.VERSION_TAG }},base_latest
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+              HELM_VERSION
+              KUBECTL_VERSION
+              HELM_LOCATION
+              HELM_VERSION
+              AZURE_CLI_VERSION
+              AZURE_FRONTDOOR_VERSION
+              TERRAFORM_VERSION
+              GOSS_VERSION
+              POPEYE_VERSION
+              CONFTEST_VERSION
+              KUBEVAL_VERSION
+              YQ_VERSION
+      - name: Write out version
+        run: |
+          echo TAG ${VERSION_TAG} > version.txt
+      - name: 'Upload cluster artifacts'
+        uses: actions/upload-artifact@v4
+        with:
+          name: basebuildinfo
+          path: |
+            version.txt
+          retention-days: 1
