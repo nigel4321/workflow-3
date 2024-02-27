@@ -1,0 +1,22 @@
+name: Build base container
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+        - 'main'
+
+env:
+  NAME: "Nigel"
+jobs:
+  say_hello:
+    name: Thing to print hello
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+      - name: Say hello
+        run: |
+            printf "Hello $NAME \n"
