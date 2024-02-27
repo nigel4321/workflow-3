@@ -8,6 +8,7 @@ on:
 
 env:
   NAME: "Nigel"
+  REPOVAR: ${{ vars.VARONE }}
 jobs:
   say_hello:
     name: Thing to print hello
@@ -20,3 +21,4 @@ jobs:
       - name: Say hello
         run: |
             ls
+            echo $REPOVAR
