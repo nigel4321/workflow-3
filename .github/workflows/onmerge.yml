@@ -2,9 +2,9 @@ name: Build base container
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-        - 'main'
+  # push:
+  #   branches:
+  #       - 'main'
 concurrency: build-base
 env:
   REGISTRY: ghcr.io
